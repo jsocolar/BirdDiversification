@@ -296,7 +296,7 @@ breeding_ranges <- spTransform(breeding_ranges, crs2)
 # Error in spChFIDs(z, as.character(y)) : lengths differ
 scinames <- unique(breeding_ranges$SCINAME)
 mem.shapes <- list()
-for(i in 9977:length(scinames)){
+for(i in 1:length(scinames)){
   print(i)
   print(scinames[i])
   species_i <- breeding_ranges[which(breeding_ranges$SCINAME == scinames[i]), ]
