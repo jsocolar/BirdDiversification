@@ -1,5 +1,5 @@
 # ENTER PATH TO THE FOLDER "ShinyPlots_small" (produced by unarchiving ShinyPlots_small.zip)
-setwd("/Users/TingleyLab/Dropbox/Work/Diversity_accum/Plots/ShinyPlots_small")
+setwd("/Users/JacobSocolar/Dropbox/Work/Diversity_accum/Plots/ShinyPlots_small")
 
 
 library(shiny)
