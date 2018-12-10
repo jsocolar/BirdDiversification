@@ -7,8 +7,7 @@ A guide to the codebase:
 Extract species lists for 34K equally spaced points across the terrestrial mainland regions of the globe, and harmonize the names in those species lists with the BirdTree names.
 
 Save objects ‘continents’ and ‘world.conts2’ as .Rdata
-
-   These objects contain shapefiles for the continents, including large land-bridge islands.
+* These objects contain shapefiles for the continents, including large land-bridge islands.
 
 Save object ‘mem.shapes’ as ‘mem_shapes_new.Rdata’
 This object contains aggregated shapefiles for the range of each species from Birdlife.
