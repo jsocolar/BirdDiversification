@@ -33,6 +33,7 @@ Save objects of the form msr2NEW_i.grd
 Each is a raster of the diversification contribution over the last 5 MY (diversification contribution at this stage in the code is R_h/R_c)
 For several different trees, save object points.df as paste("points_df", tree_i, ".Rdata", sep="")
 	Contains a dataframe of the masked rasters
+	
 Diversity4
 	Associate each point with a continent and biome
 	Save object points_cont as ‘points_cont.Rdata’
