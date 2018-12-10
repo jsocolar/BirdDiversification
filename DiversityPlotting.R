@@ -2,7 +2,7 @@ library(raster)
 library(ape)
 library(phytools)
 "%ni%" <- Negate("%in%")
-setwd("/Users/TingleyLab/Dropbox/Work/Diversity_accum")
+setwd("/Users/JacobSocolar/Dropbox/Work/Diversity_accum")
 bpdf_list <- list()
 for(i in 1:30){
   load(paste(paste("bpdf_reproj_", i, ".Rdata", sep="")))

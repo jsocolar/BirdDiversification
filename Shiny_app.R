@@ -1,13 +1,18 @@
-frames3 <- list()
+# ENTER PATH TO THE FOLDER "ShinyPlots_small" (produced by unarchiving ShinyPlots_small.zip)
+setwd("/Users/TingleyLab/Dropbox/Work/Diversity_accum/Plots/ShinyPlots_small")
+
+
+library(shiny)
+library(magick)
+
+frames <- list()
 for(i in 3:50){
   print(i)
-  frames3[[i-2]] <- list()
-  for(j in 1:2){
-    frames3[[i-2]][[j]] <- magick::image_read(paste0("Plots/ShinyPlots_small/Shiny_", i, "MY_", j, ".pdf"), density=300)
+  frames[[i-2]] <- list()
+  for(j in 1:30){
+    frames[[i-2]][[j]] <- magick::image_read_pdf(paste0("Shiny_", i, "MY_", j, ".pdf"), density=150)
   }
 }
-#animation <- magick::image_animate(magick::image_join(frames), fps=4)
-#magick::image_write(animation, "Plots/animated_fig.gif")
 
 
 # Define UI for slider demo app ----
@@ -25,12 +30,13 @@ ui <- fluidPage(
       # Input: Simple integer interval ----
       sliderInput("Timeframe", "Timeframe (MYA to present):",
                   min = 3, max = 50,
-                  value = 5),
+                  value = 5, step=1,
+                  animate = animationOptions(interval = 1100, loop = TRUE)),
       
       # Input: Decimal interval with step value ----
       sliderInput("Tree", "Phylogenetic hypothesis:",
-                  min = 1, max = 2,
-                  value = 1)
+                  min = 1, max = 30,
+                  value = 1, step=1)
       
     ),
     
@@ -60,7 +66,7 @@ server <- function(input, output) {
   })
   
   output$my_plot <- renderPlot({
-    plot(frames3[[input$Timeframe - 2]][[input$Tree]])
+    plot(frames[[input$Timeframe - 2]][[input$Tree]])
   })
   
 }
