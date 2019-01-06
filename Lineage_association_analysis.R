@@ -62,16 +62,16 @@ table(assigned_lineages$lineage_class)
 
 GLMs <- lineage_regressions(lineages,presence_matrix,family=binomial)
 
-tstats <- lapply(GLMs,summary) %>% lapply(getElement,'coefficients') %>%
-  sapply(FUN=function(x) x['x','t value'])
+zstats <- lapply(GLMs,summary) %>% lapply(getElement,'coefficients') %>%
+  sapply(FUN=function(x) x['x','z value'])
 
 richness <- apply(presence_matrix,2,sum)
 C <- lineage_collapse(lineages,presence_matrix)
 
 
-tstats <- sort(tstats,decreasing=T)
-GLMs <- GLMs[names(tstats)]
-C <- C[names(tstats),]
+zstats <- sort(zstats,decreasing=T)
+GLMs <- GLMs[names(zstats)]
+C <- C[names(zstats),]
 
 classes <- c(by(assigned_lineages$lineage_class,assigned_lineages$ID,FUN=function(x) unique(as.character(x))))
 N <- c(by(assigned_lineages$lineage_class,assigned_lineages$ID,length))
@@ -81,7 +81,7 @@ D <- data.frame('class'=classes,
                 'N'=N,
                 stringsAsFactors = F)
 
-D$tstat <- tstats[as.character(D$ID)]
+D$tstat <- zstats[as.character(D$ID)]
 
 
 g1 <- ggplot(D,aes(class,tstat,color=class))+
