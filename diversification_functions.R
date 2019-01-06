@@ -30,7 +30,7 @@ lineage_assign <- function(lineages, species_prop, c1, c2, c3, c4){
   for(i in uL){
     linProps <- species_prop[which(lineages$ID) == i]
     if(length(which(linProps >= c1))/length(linProps) >= c2){lineages$lineage_class[which(lineages$ID == i)] <- "R"}
-    else if(length(which(linProps <= (1-c3)))/length(linProps) >= (1-c4)){lineages$lineage_class[which(lineages$ID == i)] <- "P"}
+    else if(length(which(linProps <= (1-c3)))/length(linProps) >= c4){lineages$lineage_class[which(lineages$ID == i)] <- "P"}
     else(lineages$lineage_class[which(lineages$ID == i)] <- "N")
   }
   return(lineages)
