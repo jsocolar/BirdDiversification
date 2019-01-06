@@ -1,0 +1,19 @@
+Package: phylosympatry
+Type: Package
+Title: Phylosympatry: R package for estimating role of diversification and sympatry across communities
+Version: 0.1.0
+Author: Jacob Socolar, Alex Washburne & Alex Lees
+Maintainer: Jacob Socolar <jacob.socolar@gmail.com> & Alex Washburne <alex.d.washburne@gmail.com>
+Description: Functions for analyzing, summarizing and plotting the contributions of diversification and sympatry across communities.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Depends:
+  ape (>= 3.4),
+  R (>= 3.3)
+Imports:
+  reshape2 (>= 1.4.3),
+  stats (>= 3.3.2),
+  graphics (>= 3.3.2),
+  grDevices(>= 3.3.2)
+RoxygenNote: 6.1.1
