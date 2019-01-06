@@ -49,7 +49,7 @@ lineage_assign <- function(lineages, species_prop=NA, presence_matrix=NA, cutoff
     else if(length(which(linProps <= (1-cutoff_3)))/length(linProps) >= cutoff_4){lineages$lineage_class[which(lineages$ID == id)] <- "P"}
     else(lineages$lineage_class[which(lineages$ID == id)] <- "N")
   }
-  attr(lineages,'depth') <- depth
+  # attr(lineages,'depth') <- depth
   attr(lineages, 'cutoffs') <- list("cutoff_1"=cutoff_1, "cutoff_2"=cutoff_2, "cutoff_3"=cutoff_3, "cutoff_4"=cutoff_4,
                                     "cutoff_5"=cutoff_5)
   return(lineages)
