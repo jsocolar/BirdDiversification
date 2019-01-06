@@ -70,6 +70,7 @@ C <- lineage_collapse(lineages,presence_matrix)
 
 
 zstats <- sort(zstats,decreasing=T)
+coefs <- sapply(GLMs,coef)['x',]
 GLMs <- GLMs[names(zstats)]
 C <- C[names(zstats),]
 
@@ -81,17 +82,18 @@ D <- data.frame('class'=classes,
                 'N'=N,
                 stringsAsFactors = F)
 
-D$tstat <- zstats[as.character(D$ID)]
+D$z <- zstats[as.character(D$ID)]
+D$coefs <- coefs[as.character(D$ID)]
 
 
-g1 <- ggplot(D,aes(class,tstat,color=class))+
+g1 <- ggplot(D,aes(class,z,color=class))+
   geom_boxplot()+
   geom_jitter(pch=16,cex=2)
 
-g2 <- ggplot(D,aes(N,tstat,color=class,fill=class))+
+g2 <- ggplot(D,aes(N,z,color=class,fill=class))+
   geom_point()+
   geom_smooth()
 
 ggarrange(g1,g2,nrow=2)
 
-glm(tstat~class,data=D) %>% summary
+glm(z~class,data=D) %>% summary
