@@ -9,7 +9,7 @@ Richness_stats(assigned_lineages, presence_matrix)
 \arguments{
 \item{assigned_lineages}{output from \code{\link{lineage_assign}}}
 
-\item{presence_matrix}{presence_absence matrix of distributional data, where the first column is the species names}
+\item{presence_matrix}{presence_absence matrix of distributional data, species names in the rownames}
 }
 \description{
 Richness statistics for multiple communities
@@ -18,7 +18,7 @@ Richness statistics for multiple communities
 library(phylosympatry)
 set.seed(1)
 m=100
-tree <- rtree(m)
+tree <- ape::rtree(m)
 lineages <- get_lineages(tree,1)
 assigned_lineages <- lineage_assign(lineages,runif(nrow(lineages)),.7,.2,.1,.3)
 

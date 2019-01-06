@@ -2,11 +2,12 @@
 #'
 #' @param assigned_lineages output from \code{\link{lineage_assign}}
 #' @param presence_matrix presence_absence matrix of distributional data, species names in the rownames
+#' @export
 #' @examples
 #' library(phylosympatry)
 #' set.seed(1)
 #' m=100
-#' tree <- rtree(m)
+#' tree <- ape::rtree(m)
 #' lineages <- get_lineages(tree,1)
 #' assigned_lineages <- lineage_assign(lineages,runif(nrow(lineages)),.7,.2,.1,.3)
 #'

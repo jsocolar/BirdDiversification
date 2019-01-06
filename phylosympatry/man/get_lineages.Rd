@@ -19,7 +19,7 @@ Get lineages
 }
 \examples{
 library(phylosympatry)
-tree <- rtree(100)
+tree <- ape::rtree(100)
 get_lineages(tree,.3)
 get_lineages(tree,1)
 }

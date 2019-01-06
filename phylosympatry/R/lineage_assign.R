@@ -7,10 +7,10 @@
 #' @param cutoff_3 fraction of the range in species-poor areas that qualifies a species as poor-associated
 #' @param cutoff_4 fraction of species-poor associated species that qualifies a lineage as poor-associated.
 #' @param cutoff_5 richness value (if >1) or quantile (if <1) at which to call a site species-rich vs. species poor, for use only with presence_matrix (and thus species_prop=NA)
-
+#' @export
 #' @examples
 #' library(phylosympatry)
-#' tree <- rtree(100)
+#' tree <- ape::rtree(100)
 #' lineages <- get_lineages(tree,1)
 #' species_prop <- runif(nrow(lineages))
 #' lineage_assign(lineages,species_prop,.7,.1,.3,.2)

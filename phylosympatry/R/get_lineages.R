@@ -3,9 +3,10 @@
 #' @param tree phylo class object
 #' @param depth depth, in same units as branch length, at which lineages will be obtained
 #' @return data frame of with columns 'species' containing all species in the tree and "ID" indicating the lineage ID a species is in.
+#' @export
 #' @examples
 #' library(phylosympatry)
-#' tree <- rtree(100)
+#' tree <- ape::rtree(100)
 #' get_lineages(tree,.3)
 #' get_lineages(tree,1)
 get_lineages <- function(tree, depth){
