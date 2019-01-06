@@ -1,7 +1,7 @@
 #' Richness statistics for multiple communities
 #'
 #' @param assigned_lineages output from \code{\link{lineage_assign}}
-#' @param presence_matrix presence_absence matrix of distributional data, where the first column is the species names
+#' @param presence_matrix presence_absence matrix of distributional data, species names in the rownames
 #' @examples
 #' library(phylosympatry)
 #' set.seed(1)
@@ -23,7 +23,7 @@ Richness_stats <- function(assigned_lineages, presence_matrix){
   }
   n <- ncol(presence_matrix)
   r <- as.data.frame(matrix(data=NA, nrow = n, ncol = 12))
-  names(r) <- c("C", "H", "T", "CR", "HR", "TR", "CP", "HP", "TP", "CN", "HN", "TN")
+  names(r) <- c("C", "H", "A", "CR", "HR", "AR", "CP", "HP", "AP", "CN", "HN", "AN")
   spp <- rownames(presence_matrix)
   IDs <- assigned_lineages$ID
   assigned_spp <- assigned_lineages$species
@@ -42,15 +42,15 @@ Richness_stats <- function(assigned_lineages, presence_matrix){
     lHP <- unique(IDs[lin_class == "P" & assigned_spp %in% spp[presence_matrix[,i] == 1]])
     lHN <- unique(IDs[lin_class == "N" & assigned_spp %in% spp[presence_matrix[,i] == 1]])
 
-    r$H[i-1] <- length(lH)
-    r$HR[i-1] <- length(lHR)
-    r$HP[i-1] <- length(lHP)
-    r$HN[i-1] <- length(lHN)
+    r$H[i] <- length(lH)
+    r$HR[i] <- length(lHR)
+    r$HP[i] <- length(lHP)
+    r$HN[i] <- length(lHN)
 
-    r$T[i-1] <- sum(IDs %in% lH)
-    r$TR[i-1] <- sum(IDs %in% lHR)
-    r$TP[i-1] <- sum(IDs %in% lHP)
-    r$TN[i-1] <- sum(IDs %in% lHN)
+    r$A[i] <- sum(IDs %in% lH)
+    r$AR[i] <- sum(IDs %in% lHR)
+    r$AP[i] <- sum(IDs %in% lHP)
+    r$AN[i] <- sum(IDs %in% lHN)
   }
 
   return(r)
