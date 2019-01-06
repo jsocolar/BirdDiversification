@@ -52,15 +52,15 @@ rownames(presence_matrix) <- tree$tip.label
 lineages <- get_lineages(tree,1)
 
 props <- runif(nrow(lineages))
-assigned_lineages <- lineage_assign(lineages,presence_matrix=presence_matrix,
-                                    cutoff_1=.7,cutoff_2=.3,cutoff_3=.7,cutoff_4=.3)
+assigned_lineages <- lineage_assign(lineages,species_prop=props,
+                                    cutoff_1=.7,cutoff_2=.1,cutoff_3=.7,cutoff_4=.3)
 
 table(assigned_lineages$lineage_class)
 # N   P   R
 # 52  66 162
 
 
-GLMs <- lineage_regressions(lineages,presence_matrix)
+GLMs <- lineage_regressions(lineages,presence_matrix,family=binomial)
 
 tstats <- lapply(GLMs,summary) %>% lapply(getElement,'coefficients') %>%
   sapply(FUN=function(x) x['x','t value'])
