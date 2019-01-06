@@ -25,7 +25,7 @@ lineage_assign <- function(lineages, species_prop=NA, presence_matrix=NA, cutoff
   if(cutoff_5 <= 0){
     stop("cutoff_5 must be strictly greater than zero")
   }
-  
+
   if(is.na(species_prop)){
     presence_matrix <- presence_matrix[match(lineages$species, rownames(presence_matrix)), ]
     richnesses <- colSums(presence_matrix)
@@ -36,10 +36,10 @@ lineage_assign <- function(lineages, species_prop=NA, presence_matrix=NA, cutoff
     }
     species_prop <- rep(NA, nrow(lineages))
     for(i in 1:length(species_prop)){
-      species_prop[i] <- sum(presence_absence[i, richnesses > richness_cutoff])/sum(presence_absence[i])
+      species_prop[i] <- sum(presence_matrix[i, richnesses > richness_cutoff])/sum(presence_matrix[i])
     }
   }
-  
+
   lineage_IDs <- unique(lineages$ID)
   lineages$species_prop <- species_prop
   lineages$lineage_class <- NA
@@ -50,7 +50,7 @@ lineage_assign <- function(lineages, species_prop=NA, presence_matrix=NA, cutoff
     else(lineages$lineage_class[which(lineages$ID == id)] <- "N")
   }
   attr(lineages,'depth') <- depth
-  attr(lineages, 'cutoffs') <- list("cutoff_1"=cutoff_1, "cutoff_2"=cutoff_2, "cutoff_3"=cutoff_3, "cutoff_4"=cutoff_4, 
+  attr(lineages, 'cutoffs') <- list("cutoff_1"=cutoff_1, "cutoff_2"=cutoff_2, "cutoff_3"=cutoff_3, "cutoff_4"=cutoff_4,
                                     "cutoff_5"=cutoff_5)
   return(lineages)
 }

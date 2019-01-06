@@ -3,6 +3,7 @@
 library(phylosympatry)
 library(magrittr)
 library(ggplot2)
+library(ggpubr)
 
 
 # Functions ---------------------------------------------------------------
@@ -51,7 +52,8 @@ rownames(presence_matrix) <- tree$tip.label
 lineages <- get_lineages(tree,1)
 
 props <- runif(nrow(lineages))
-assigned_lineages <- lineage_assign(lineages,props,.7,.3,.7,.3)
+assigned_lineages <- lineage_assign(lineages,presence_matrix=presence_matrix,
+                                    cutoff_1=.7,cutoff_2=.3,cutoff_3=.7,cutoff_4=.3)
 
 table(assigned_lineages$lineage_class)
 # N   P   R
@@ -72,15 +74,24 @@ GLMs <- GLMs[names(tstats)]
 C <- C[names(tstats),]
 
 classes <- c(by(assigned_lineages$lineage_class,assigned_lineages$ID,FUN=function(x) unique(as.character(x))))
+N <- c(by(assigned_lineages$lineage_class,assigned_lineages$ID,length))
+
 D <- data.frame('class'=classes,
                 'ID'=as.numeric(names(classes)),
+                'N'=N,
                 stringsAsFactors = F)
 
 D$tstat <- tstats[as.character(D$ID)]
 
 
-ggplot(D,aes(class,tstat,color=class))+
+g1 <- ggplot(D,aes(class,tstat,color=class))+
   geom_boxplot()+
   geom_jitter(pch=16,cex=2)
+
+g2 <- ggplot(D,aes(N,tstat,color=class,fill=class))+
+  geom_point()+
+  geom_smooth()
+
+ggarrange(g1,g2,nrow=2)
 
 glm(tstat~class,data=D) %>% summary
