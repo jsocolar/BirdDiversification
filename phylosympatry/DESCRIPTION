@@ -15,5 +15,6 @@ Imports:
   reshape2 (>= 1.4.3),
   stats (>= 3.3.2),
   graphics (>= 3.3.2),
-  grDevices(>= 3.3.2)
+  grDevices (>= 3.3.2),
+  parallel (>= 3.2.2)
 RoxygenNote: 6.1.1

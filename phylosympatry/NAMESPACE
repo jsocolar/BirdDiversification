@@ -3,3 +3,5 @@
 export(Richness_stats)
 export(get_lineages)
 export(lineage_assign)
+export(lineage_collapse)
+export(lineage_regression)
