@@ -1,5 +1,5 @@
 ### This script will analyze the probability of presence across lineages
-
+setwd('/Users/JacobSocolar/Dropbox/Work/Diversity_accum')
 library(phylosympatry)
 library(magrittr)
 library(ggplot2)
@@ -43,24 +43,27 @@ lineage_regressions <- function(lineages,presence_matrix,x='richness',collapse.f
 
 
 
-set.seed(1)
-m <- 100
-n <- 30
-tree <- rtree(m)
-presence_matrix <- matrix(rbinom(m*n,1,.1),nrow=m)
-rownames(presence_matrix) <- tree$tip.label
-lineages <- get_lineages(tree,1)
+#set.seed(1)
+#m <- 100
+#n <- 30
+#tree <- rtree(m)
+#presence_matrix <- matrix(rbinom(m*n,1,.1),nrow=m)
+#rownames(presence_matrix) <- tree$tip.label
+load("PTrees.Rdata")
+load("breeding_data.Rdata")
+tree <- PTrees[[1]]
+breeding_data <- breeding_data[-which(duplicated(breeding_data[,1])), ]
+rownames(breeding_data) <- breeding_data[,1]
+breeding_data <- breeding_data[, -1]
 
-props <- runif(nrow(lineages))
-assigned_lineages <- lineage_assign(lineages,species_prop=props,
-                                    cutoff_1=.7,cutoff_2=.1,cutoff_3=.7,cutoff_4=.3)
+lineages <- get_lineages(tree,30)
+
+assigned_lineages <- lineage_assign(lineages,presence_matrix=breeding_data,
+                                    cutoff_1=.7,cutoff_2=.5,cutoff_3=.7,cutoff_4=.5)
 
 table(assigned_lineages$lineage_class)
-# N   P   R
-# 52  66 162
 
-
-GLMs <- lineage_regressions(lineages,presence_matrix,family=binomial)
+GLMs <- lineage_regressions(lineages,breeding_data,family=binomial)
 
 zstats <- lapply(GLMs,summary) %>% lapply(getElement,'coefficients') %>%
   sapply(FUN=function(x) x['x','z value'])

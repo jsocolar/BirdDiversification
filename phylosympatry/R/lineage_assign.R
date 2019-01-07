@@ -27,7 +27,9 @@ lineage_assign <- function(lineages, species_prop=NA, presence_matrix=NA, cutoff
   }
 
   if(is.na(species_prop)){
-    presence_matrix <- presence_matrix[match(lineages$species, rownames(presence_matrix)), ]
+    species_order <- match(lineages$species, rownames(presence_matrix))
+    species_order <- species_order[!is.na(species_order)]
+    presence_matrix <- presence_matrix[species_order, ]
     richnesses <- colSums(presence_matrix)
     if(cutoff_5 > 1){
       richness_cutoff <- cutoff_5
