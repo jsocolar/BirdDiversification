@@ -15,17 +15,27 @@
 #' species_prop <- runif(nrow(lineages))
 #' lineage_assign(lineages,species_prop,.7,.1,.3,.2)
 #'
-lineage_assign <- function(lineages, species_prop=NA, presence_matrix=NA, cutoff_1, cutoff_2, cutoff_3, cutoff_4, cutoff_5=.5){
-  if(!is.na(species_prop) & !is.na(presence_matrix)){
-    warning("species_prop and presence_matrix are both set.  Using species_prop.")
-  }
+lineage_assign <- function(lineages, species_prop=NA, presence_matrix=NULL, cutoff_1, cutoff_2, cutoff_3, cutoff_4, cutoff_5=.5){
   if(cutoff_5 == 1){
     stop("cutoff_5 must be strictly less than 1 if a quantile, or strictly greater than 1 if a richness")
   }
   if(cutoff_5 <= 0){
     stop("cutoff_5 must be strictly greater than zero")
   }
-
+  if(is.na(species_prop)){
+    '%ni%' <- Negate('%in%')
+    if(sum(rownames(presence_matrix) %ni% lineages$species) > 0){
+      stop("Some species in presence_matrix are not represented in lineages.")
+    }
+    if(sum(lineages$species %ni% rownames(presence_matrix)) > 0){
+      stop("Some species in lineages are not represented in presence_matrix. Either add all-zero rows for missing species, or prune the phylogeny to exclude these species.")
+    }
+  }
+  
+  if(!is.na(species_prop) & !is.null(presence_matrix)){
+    warning("species_prop and presence_matrix are both set.  Using species_prop.")
+  }
+  
   if(is.na(species_prop)){
     species_order <- match(lineages$species, rownames(presence_matrix))
     species_order <- species_order[!is.na(species_order)]
@@ -36,20 +46,25 @@ lineage_assign <- function(lineages, species_prop=NA, presence_matrix=NA, cutoff
     }else{
       richness_cutoff <- quantile(richnesses, cutoff_5)
     }
-    species_prop <- rep(NA, nrow(lineages))
-    for(i in 1:length(species_prop)){
-      species_prop[i] <- sum(presence_matrix[i, richnesses > richness_cutoff])/sum(presence_matrix[i])
-    }
+    species_prop <- rowSums(presence_matrix[, richnesses > richness_cutoff])/rowSums(presence_matrix)
   }
 
   lineage_IDs <- unique(lineages$ID)
   lineages$species_prop <- species_prop
-  lineages$lineage_class <- NA
+  lineages$lineage_class <- "N"
   for(id in lineage_IDs){
     linProps <- species_prop[which(lineages$ID == id)]
-    if(length(which(linProps >= cutoff_1))/length(linProps) >= cutoff_2){lineages$lineage_class[which(lineages$ID == id)] <- "R"}
-    else if(length(which(linProps <= (1-cutoff_3)))/length(linProps) >= cutoff_4){lineages$lineage_class[which(lineages$ID == id)] <- "P"}
-    else(lineages$lineage_class[which(lineages$ID == id)] <- "N")
+    if(sum(is.nan(linProps)) > 0){
+      warning(paste0('No richness proportion could be calculated for the following species:\n', paste(names(linProps)[is.nan(linProps)], collapse = ' ')))
+      linProps <- linProps[!is.nan(linProps)]
+    }
+    if(length(linProps) > 0){
+      if(sum(linProps >= cutoff_1)/length(linProps) >= cutoff_2){lineages$lineage_class[which(lineages$ID == id)] <- "R"}
+      else if(sum(linProps <= (1-cutoff_3))/length(linProps) >= cutoff_4){lineages$lineage_class[which(lineages$ID == id)] <- "P"}
+    }else{
+      lineages$lineage_class[which(lineages$ID == id)] <- "NA"
+    }
+    
   }
   attr(lineages, 'cutoffs') <- list("cutoff_1"=cutoff_1, "cutoff_2"=cutoff_2, "cutoff_3"=cutoff_3, "cutoff_4"=cutoff_4,
                                     "cutoff_5"=cutoff_5)

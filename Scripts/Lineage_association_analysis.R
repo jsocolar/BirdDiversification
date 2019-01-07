@@ -49,14 +49,21 @@ lineage_regressions <- function(lineages,presence_matrix,x='richness',collapse.f
 #tree <- rtree(m)
 #presence_matrix <- matrix(rbinom(m*n,1,.1),nrow=m)
 #rownames(presence_matrix) <- tree$tip.label
+
 load("PTrees.Rdata")
 load("breeding_data.Rdata")
+'%ni%' <- Negate('%in%')
+
 tree <- PTrees[[1]]
 breeding_data <- breeding_data[-which(duplicated(breeding_data[,1])), ]
 rownames(breeding_data) <- breeding_data[,1]
 breeding_data <- breeding_data[, -1]
-
 lineages <- get_lineages(tree,30)
+
+missing_species <- as.data.frame(matrix(data = 0, nrow=sum(lineages$species %ni% rownames(breeding_data)), ncol=ncol(breeding_data)))
+rownames(missing_species) <- lineages$species[which(lineages$species %ni% rownames(breeding_data))]
+colnames(missing_species) <- colnames(breeding_data)
+breeding_data <- rbind(breeding_data, missing_species)
 
 assigned_lineages <- lineage_assign(lineages,presence_matrix=breeding_data,
                                     cutoff_1=.7,cutoff_2=.5,cutoff_3=.7,cutoff_4=.5)
