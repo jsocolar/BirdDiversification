@@ -1,5 +1,8 @@
 ### This script will analyze the probability of presence across lineages
 setwd('/Users/JacobSocolar/Dropbox/Work/Diversity_accum')
+
+#devtools::install_github('jsocolar/BirdDiversification/phylosympatry')
+
 library(phylosympatry)
 library(magrittr)
 library(ggplot2)
@@ -22,7 +25,7 @@ tree <- PTrees[[1]]
 breeding_data <- breeding_data[-which(duplicated(breeding_data[,1])), ]
 rownames(breeding_data) <- breeding_data[,1]
 breeding_data <- breeding_data[, -1]
-lineages <- get_lineages(tree,30)
+lineages <- get_lineages(tree,20)
 
 missing_species <- as.data.frame(matrix(data = 0, nrow=sum(lineages$species %ni% rownames(breeding_data)), ncol=ncol(breeding_data)))
 rownames(missing_species) <- lineages$species[which(lineages$species %ni% rownames(breeding_data))]
@@ -30,17 +33,18 @@ colnames(missing_species) <- colnames(breeding_data)
 breeding_data <- rbind(breeding_data, missing_species)
 
 assigned_lineages <- lineage_assign(lineages,presence_matrix=breeding_data,
-                                    cutoff_1=.7,cutoff_2=.5,cutoff_3=.7,cutoff_4=.5)
+                                    cutoff_1=.7,cutoff_2=.7,cutoff_3=.7,cutoff_4=.7, cutoff_5 = .85)
 
 table(assigned_lineages$lineage_class)
 
-GLMs <- lineage_regressions(lineages,breeding_data,family=binomial)
+GLMs <- lineage_regression(lineages,breeding_data,family=binomial)
 
 zstats <- lapply(GLMs,summary) %>% lapply(getElement,'coefficients') %>%
   sapply(FUN=function(x) x['x','z value'])
 
-richness <- apply(presence_matrix,2,sum)
-C <- lineage_collapse(lineages,presence_matrix)
+richness <- colSums(breeding_data)
+
+C <- lineage_collapse(lineages,breeding_data)
 
 
 zstats <- sort(zstats,decreasing=T)
@@ -66,8 +70,71 @@ g1 <- ggplot(D,aes(class,z,color=class))+
 
 g2 <- ggplot(D,aes(N,z,color=class,fill=class))+
   geom_point()+
-  geom_smooth()
+  geom_smooth()+
+  scale_x_log10()
 
 ggarrange(g1,g2,nrow=2)
 
 glm(z~class,data=D) %>% summary
+
+rst <- Richness_stats(assigned_lineages, breeding_data)
+
+scatter.smooth(log(rst$A/rst$H) ~ rst$C,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness", 
+               ylab= "Divers. contrib.", main = "All lineages")
+
+scatter.smooth(log(rst$AR/rst$HR) ~ rst$C,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness", 
+               ylab= "Divers. contrib.", main = "Rich-areas lineages")
+
+scatter.smooth(log(rst$AP/rst$HP) ~ rst$C,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness", 
+               ylab= "Divers. contrib.", main = "Poor-areas lineages")
+
+scatter.smooth(log(rst$AN/rst$HN) ~ rst$C,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness", 
+               ylab= "Divers. contrib.", main = "Neither lineages")
+
+
+
+
+
+
+
+
+scatter.smooth((rst$A/rst$H - 1) ~ rst$CR,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness of rich-areas lineages", 
+               ylab= "Divers. contrib.", main = "All lineages")
+
+scatter.smooth((rst$AR/rst$HR - 1) ~ rst$CR,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness of rich-areas lineages", 
+               ylab= "Divers. contrib.", xaxt='n', yaxt='n', main = "Rich-areas lineages")
+
+scatter.smooth((rst$AP/rst$HP - 1) ~ rst$CR,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness of rich-areas lineages", 
+               ylab= "Divers. contrib.", xaxt='n', yaxt='n', main = "Poor-areas lineages")
+
+scatter.smooth((rst$AN/rst$HN - 1) ~ rst$CR,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness of rich-areas lineages", 
+               ylab= "Divers. contrib.", xaxt='n', yaxt='n', main = "Neither lineages")
+
+
+
+
+
+
+scatter.smooth((rst$A/rst$H - 1) ~ rst$CP,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness of poor-areas lineages", 
+               ylab= "Divers. contrib.", xaxt='n', yaxt='n', main = "All lineages")
+
+scatter.smooth((rst$AR/rst$HR - 1) ~ rst$CP,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness of poor-areas lineages", 
+               ylab= "Divers. contrib.", xaxt='n', yaxt='n', main = "Rich-areas lineages")
+
+scatter.smooth((rst$AP/rst$HP - 1) ~ rst$CP,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness of poor-areas lineages", 
+               ylab= "Divers. contrib.", xaxt='n', yaxt='n', main = "Poor-areas lineages")
+
+scatter.smooth((rst$AN/rst$HN - 1) ~ rst$CP,
+               pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness of poor-areas lineages", 
+               ylab= "Divers. contrib.", xaxt='n', yaxt='n', main = "Neither lineages")
