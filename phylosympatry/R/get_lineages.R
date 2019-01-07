@@ -22,5 +22,6 @@ get_lineages <- function(tree, depth){
 
   lineages <- reshape2::melt(rList)
   names(lineages) <- c("species", "ID")
+  attr(lineages,'depth') <- depth
   return(lineages)
 }

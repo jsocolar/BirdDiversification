@@ -30,8 +30,6 @@ Richness_stats <- function(assigned_lineages, presence_matrix){
   assigned_spp <- assigned_lineages$species
   lin_class <- assigned_lineages$lineage_class
 
-
-
   r$C <- colSums(presence_matrix)
   r$CR <- colSums(presence_matrix[spp %in% assigned_spp[lin_class == "R"],])
   r$CP <- colSums(presence_matrix[spp %in% assigned_spp[lin_class == "P"],])
@@ -53,6 +51,6 @@ Richness_stats <- function(assigned_lineages, presence_matrix){
     r$AP[i] <- sum(IDs %in% lHP)
     r$AN[i] <- sum(IDs %in% lHN)
   }
-
+  
   return(r)
 }
