@@ -6,42 +6,6 @@ library(ggplot2)
 library(ggpubr)
 
 
-# Functions ---------------------------------------------------------------
-
-lineage_collapse <- function(lineages,presence_matrix,collapse.fcn=max){
-  IDs <- unique(lineages$ID)
-  C <- matrix(NA,nrow=length(IDs),ncol=ncol(presence_matrix))
-  rownames(C) <- IDs
-  for (id in IDs){
-    C[id,] <- apply(presence_matrix[lineages$species[lineages$ID==id],,drop=F],
-                    2,collapse.fcn)
-  }
-  return(C)
-}
-
-lineage_regressions <- function(lineages,presence_matrix,x='richness',collapse.fcn=max,...){
-  if (x=='richness'){
-    x <- apply(presence_matrix,2,sum)
-  } else{
-    if (length(x)!=ncol(presence_matrix)){
-      stop('length of meta-data, x, must be equal to ncol of presence_matrix')
-    }
-  }
-
-  C <- lineage_collapse(lineages,presence_matrix,collapse.fcn)
-
-  GLMs <- apply(C,1,FUN=function(y,x) glm(y~x,...),x=x)
-  names(GLMs) <- rownames(C)
-  rm('C')
-  gc()
-  return(GLMs)
-}
-
-
-# Analysis ------------------------------------------------------------------------
-
-
-
 
 #set.seed(1)
 #m <- 100
