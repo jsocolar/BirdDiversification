@@ -18,7 +18,6 @@
 #' Richness_stats(assigned_lineages,presence_matrix)
 Richness_stats <- function(assigned_lineages, presence_matrix){
 
-
   if (is.null(rownames(presence_matrix)) | !all(rownames(presence_matrix) %in% assigned_lineages$species)){
     stop('No rownames for presence_matrix or some rownames not found in assigned_lineages$species. \n All rownames of presence_matrix must be contained in assigned_lineages$species')
   }
