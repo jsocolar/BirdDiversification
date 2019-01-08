@@ -4,7 +4,7 @@
 \alias{lineage_assign}
 \title{Assign Lineages based on proportional membership to categories}
 \usage{
-lineage_assign(lineages, species_prop = NA, presence_matrix = NA,
+lineage_assign(lineages, species_prop = NA, presence_matrix = NULL,
   cutoff_1, cutoff_2, cutoff_3, cutoff_4, cutoff_5 = 0.5)
 }
 \arguments{
