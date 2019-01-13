@@ -83,7 +83,7 @@ myglm <- function(formula,data,...){
 
 pf <- gpf(Data,tree,frmla.phylo,algorithm = 'mStable',MetaData = R,
           PartitioningVariables = 'richness',family=binomial,
-          nfactors=50,ncores=7,model.fcn = myglm,min.group.size = 2,
+          nfactors=100,ncores=7,model.fcn = myglm,min.group.size = 2,
           cluster.depends = 'library(Matrix)')
 
 #7.12 minutes per factor for 1,000 samples with min.group.size=1 (default - include tips)
