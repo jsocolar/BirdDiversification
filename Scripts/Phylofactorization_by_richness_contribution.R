@@ -133,7 +133,7 @@ table(group.sizes)
 big.groups <- which(group.sizes>3)
 ggs <- lapply(big.groups,rplot)
 
-ggarrange(plotlist = ggs,ncol=5,nrow=3)
+ggarrange(plotlist = ggs,ncol=8,nrow=5)
 
 
 species.list <- phylofactor::pf.groupsTospecies(pf)
@@ -149,14 +149,45 @@ for (i in 1:length(spp)){
 }
 
 
-pp=pf.tree(pf,factors=big.groups,top.layer = T,top.alpha = 1)
+pp=pf.tree(pf,factors=big.groups,top.layer = T,top.alpha = 1,alpha=.1)
 pp
-ggsave(filename='BirdDiversification/Figures/Large_clades_with_low_richness_bias.png',height=20,width=20,units='in')
+ggsave(filename='BirdDiversification/Figures/Large_clades_with_low_richness_bias.png',
+       height=40,width=40,units='in')
 
 pvals <- lapply(pf$models,aov) %>% lapply(summary) %>%
   sapply(FUN=function(x) x[[1]]['phylo:richness','Pr(>F)'])
 
 
-plot(1:100,c(pvals,rep(NA,50)),log='y',ylim=c(1e-89,1e-4),
+
+plot(1:100,pvals,log='y',ylim=c(1e-89,1e-4),
      main='Pvalue decay',xlab='Factor',ylab='Pr(>F)')
 lines(1:100,.01/seq(7441-2*(0:99)))
+
+
+
+######## Any bias in node depth?
+node.depths <- ape::node.depth(tree)
+
+pf.mrcas <- sapply(pf$groups,FUN=function(gg,tree) MRCA(tree,tree$tip.label[gg[[1]]]),tree=tree)
+
+
+hist(log(node.depths[node.depths>1]))
+hist()
+
+
+dd <- data.table('Node'=1:length(node.depths),
+                 'depth'=node.depths)
+dd[,factored:=Node %in% pf.mrcas]
+
+ggplot(dd[depth!=1],aes(log(depth),group=factored,fill=factored))+
+  geom_density(alpha=0.5)
+
+############ No apparent bias in node depth
+
+
+
+
+# How do phylofactors map to Rickleff lineages? --------------------------------
+
+lineages <- get_lineages(tree,.1)
+assigned_lineages <- lineage_assign(lineages,)
