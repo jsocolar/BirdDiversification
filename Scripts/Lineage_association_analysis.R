@@ -138,3 +138,8 @@ scatter.smooth((rst$AP/rst$HP - 1) ~ rst$CP,
 scatter.smooth((rst$AN/rst$HN - 1) ~ rst$CP,
                pch=".", lpars = list(col="brown", lwd=3), xlab = "Species Richness of poor-areas lineages", 
                ylab= "Divers. contrib.", xaxt='n', yaxt='n', main = "Neither lineages")
+
+
+
+
+ricklefs <- ricklefs_analysis(assigned_lineages)
