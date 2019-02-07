@@ -73,7 +73,7 @@ S[,rangesize.lineage:=length(unique(sample)),by=ID]
 
 S[,richness.lineage:=length(unique(species)), by=ID]
 
-### the data.table S has everything you need. If you want the average richness in a lineage:
+# richicality1: mean richness over species ranges, weighting species equally
 setkey(S,ID,species)
 S1.1 <- S[,list(x=unique(richicality.species),rangesize.lineage=unique(rangesize.lineage),
                 richness.lineage=unique(richness.lineage)),by=c('ID','species')]
