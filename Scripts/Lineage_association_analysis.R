@@ -8,15 +8,6 @@ library(magrittr)
 library(ggplot2)
 library(ggpubr)
 
-
-
-#set.seed(1)
-#m <- 100
-#n <- 30
-#tree <- rtree(m)
-#presence_matrix <- matrix(rbinom(m*n,1,.1),nrow=m)
-#rownames(presence_matrix) <- tree$tip.label
-
 load("PTrees.Rdata")
 load("breeding_data.Rdata")
 '%ni%' <- Negate('%in%')
