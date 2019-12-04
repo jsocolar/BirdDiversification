@@ -1,5 +1,5 @@
-setwd('/Users/Jacob/Dropbox/Work/Diversity_accum')
-#setwd('~/Socolar/Data')
+# setwd('/Users/Jacob/Dropbox/Work/Diversity_accum')
+setwd('~/Socolar/Data')
 
 #devtools::install_github('jsocolar/BirdDiversification/phylosympatry')
 library(phylosympatry)
@@ -62,15 +62,11 @@ setkey(D,species)
 species_stats <- species_stats[D,nomatch=0]
 
 setkey(species_stats,species)
-
-
 setkey(lineages,species)
 S <- species_stats[lineages]
 
 S[,richicality.species:=mean(richness.site),by=species]
-
 S[,rangesize.lineage:=length(unique(sample)),by=ID]
-
 S[,richness.lineage:=length(unique(species)), by=ID]
 
 # richicality1: mean richness over species ranges, weighting species equally
@@ -108,3 +104,31 @@ richicality_frame2$richicality.lineage.3 <- scale(richicality_frame$richicality.
 summary(lm(rangesize.lineage ~ richness.lineage*richicality.lineage.1, data = richicality_frame2))
 summary(lm(rangesize.lineage ~ richness.lineage*richicality.lineage.2, data = richicality_frame2))
 summary(lm(rangesize.lineage ~ richness.lineage*richicality.lineage.3, data = richicality_frame2))
+
+
+
+### re-analyze on log-rangesize and log-richness
+summary(lm(log(rangesize.lineage) ~ log(richness.lineage)*richicality.lineage.1, data = richicality_frame2))
+summary(lm(log(rangesize.lineage) ~ log(richness.lineage)*richicality.lineage.2, data = richicality_frame2))
+summary(lm(log(rangesize.lineage) ~ log(richness.lineage)*richicality.lineage.3, data = richicality_frame2))
+
+
+### re-analyze on log-rangesize and log-richness
+summary(lm(log(rangesize.lineage) ~ richness.lineage*richicality.lineage.1, data = richicality_frame2))
+summary(lm(log(rangesize.lineage) ~ richness.lineage*richicality.lineage.2, data = richicality_frame2))
+summary(lm(log(rangesize.lineage) ~ richness.lineage*richicality.lineage.3, data = richicality_frame2))
+
+
+save(list=ls(),file='lineage_size_vs_richness_workspace')
+
+
+### some other visualizations
+n=5
+ntiles <- function(x,n=3) ceiling(n*ecdf(x)(x))
+
+S1[,richicality_bin:=factor(ntiles(richicality.lineage,n),levels=1:n)]
+
+ggplot(S1,aes(log(richness.lineage),log(rangesize.lineage),color=richicality_bin,by=richicality_bin))+
+  geom_point()+
+  geom_smooth(method='glm')+
+  facet_wrap(.~richicality_bin,nrow=1)
